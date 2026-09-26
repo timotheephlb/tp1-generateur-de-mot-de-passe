@@ -1,0 +1,10 @@
+[project]
+name = "tp1"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Timothee Philibert", email = "philibert.timothee@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = []
