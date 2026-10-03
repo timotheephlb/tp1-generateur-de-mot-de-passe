@@ -11,6 +11,15 @@ class PasswordGenerator:
     }
 
     def __init__(self, longueur, utilise_minuscule, utilise_majuscule, utilise_nombre, utilise_symbole, valide):
+        if longueur <= 0:
+            raise ValueError("La longueur doit être positive")
+        if not (utilise_minuscule or utilise_majuscule or utilise_nombre or utilise_symbole):
+            raise ValueError("Au moins un type de caractère doit être sélectionné")
+
+        nb_types = sum([utilise_minuscule, utilise_majuscule, utilise_nombre, utilise_symbole])
+        if valide and longueur < nb_types:
+            raise ValueError("La longueur est trop petite pour satisfaire la validation")
+
         self.longueur = longueur
         self.utilise_minuscule = utilise_minuscule
         self.utilise_majuscule = utilise_majuscule
