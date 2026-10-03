@@ -1,4 +1,5 @@
 import argparse
+from app.core.generator import PasswordGenerator
 
 def main():
     parser = argparse.ArgumentParser()
@@ -15,7 +16,9 @@ def main():
     utilise_nombre = not args.no_digits
     utilise_symbole = not args.no_symbols
 
-    print(utilise_minuscule, utilise_majuscule, utilise_nombre, utilise_symbole)
+    gen = PasswordGenerator(args.length, utilise_minuscule, utilise_majuscule, utilise_nombre, utilise_symbole, args.validate)
+    mot_de_passe = gen.generer()
+    print(mot_de_passe)
 
 
 if __name__ == "__main__":
