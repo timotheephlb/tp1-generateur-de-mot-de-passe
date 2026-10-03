@@ -1,18 +1,68 @@
 import string
+import random
 
 
 class PasswordGenerator:
-    TYPES_CARACTERES={
+    TYPES_CARACTERES = {
         "minuscule": string.ascii_lowercase,
         "majuscule": string.ascii_uppercase,
-        "nombre":string.digits,
-        "symbole":string.punctuation
+        "nombre": string.digits,
+        "symbole": string.punctuation
     }
-    def __init__(self,longueur,utilise_minuscule,utilise_majuscule,utilise_nombre,utilise_symbole,valide):
-        self.longueur=longueur
-        self.utilise_minuscule=utilise_minuscule
-        self.utilise_majuscule=utilise_majuscule
-        self.utilise_nombre=utilise_nombre
-        self.utilise_symbole=utilise_symbole
-        self.valide=valide
 
+    def __init__(self, longueur, utilise_minuscule, utilise_majuscule, utilise_nombre, utilise_symbole, valide):
+        self.longueur = longueur
+        self.utilise_minuscule = utilise_minuscule
+        self.utilise_majuscule = utilise_majuscule
+        self.utilise_nombre = utilise_nombre
+        self.utilise_symbole = utilise_symbole
+        self.valide = valide
+
+    def _generer_un_essai(self):
+        chaine = ""
+        if self.utilise_minuscule:
+            chaine += self.TYPES_CARACTERES["minuscule"]
+        if self.utilise_majuscule:
+            chaine += self.TYPES_CARACTERES["majuscule"]
+        if self.utilise_nombre:
+            chaine += self.TYPES_CARACTERES["nombre"]
+        if self.utilise_symbole:
+            chaine += self.TYPES_CARACTERES["symbole"]
+        if chaine == "":
+            raise ValueError("Le mot de passe ne peut être vide")
+        mot_de_passe = ""
+        for i in range(self.longueur):
+            mot_de_passe += random.choice(chaine)
+        return mot_de_passe
+
+    def generer(self):
+        mot_de_passe = self._generer_un_essai()
+        while self.valide and not self.valider(mot_de_passe):
+            mot_de_passe = self._generer_un_essai()
+        return mot_de_passe
+
+    def valider(self, mot_de_passe):
+        contient_minuscule=False
+        contient_majuscule=False
+        contient_nombre=False
+        contient_symbole=False
+        for c in mot_de_passe:
+            if c in self.TYPES_CARACTERES["minuscule"]:
+                contient_minuscule=True
+            if c in self.TYPES_CARACTERES["majuscule"]:
+                contient_majuscule=True
+            if c in self.TYPES_CARACTERES["nombre"]:
+                contient_nombre=True
+            if c in self.TYPES_CARACTERES["symbole"]:
+                contient_symbole=True
+
+        if self.utilise_majuscule and not contient_majuscule:
+            return False
+        elif self.utilise_minuscule and not contient_minuscule:
+            return False
+        elif self.utilise_nombre and not contient_nombre:
+            return False
+        elif self.utilise_symbole and not contient_symbole:
+            return False
+        else :
+            return True
