@@ -7,6 +7,7 @@ import random
 
 
 class PasswordGenerator:
+    """Génère des mots de passe aléatoires selon la longueur et les types de caractères choisis."""
     TYPES_CARACTERES = {
         "minuscule": string.ascii_lowercase,
         "majuscule": string.ascii_uppercase,
@@ -32,6 +33,7 @@ class PasswordGenerator:
         self.valide = valide
 
     def _generer_un_essai(self):
+        """Construit un mot de passe aléatoire à partir des caractères autorisés (sans validation)."""
         chaine = ""
         if self.utilise_minuscule:
             chaine += self.TYPES_CARACTERES["minuscule"]
@@ -49,12 +51,14 @@ class PasswordGenerator:
         return mot_de_passe
 
     def generer(self):
+        """Retourne un mot de passe. Si la validation est activée, régénère jusqu'à obtenir un mot de passe valide."""
         mot_de_passe = self._generer_un_essai()
         while self.valide and not self.valider(mot_de_passe):
             mot_de_passe = self._generer_un_essai()
         return mot_de_passe
 
     def valider(self, mot_de_passe):
+        """Retourne True si le mot de passe contient au moins un caractère de chaque type sélectionné."""
         contient_minuscule=False
         contient_majuscule=False
         contient_nombre=False
