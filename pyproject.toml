@@ -1,7 +1,7 @@
 [project]
 name = "tp1"
 version = "0.1.0"
-description = "Add your description here"
+description = "Gestionnaire de mots de passe (CLI et interface PySide6)"
 readme = "README.md"
 authors = [
     { name = "Timothee Philibert", email = "philibert.timothee@gmail.com" }
