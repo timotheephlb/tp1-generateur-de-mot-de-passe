@@ -20,9 +20,13 @@ def main():
     utilise_nombre = not args.no_digits
     utilise_symbole = not args.no_symbols
 
-    gen = PasswordGenerator(args.length, utilise_minuscule, utilise_majuscule, utilise_nombre, utilise_symbole, args.validate)
-    mot_de_passe = gen.generer()
-    print(mot_de_passe)
+    try:
+        gen = PasswordGenerator(args.length, utilise_minuscule, utilise_majuscule,
+                                utilise_nombre, utilise_symbole, args.validate)
+        print(gen.generer())
+    except ValueError as e:
+        print(f"Erreur : {e}")
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
