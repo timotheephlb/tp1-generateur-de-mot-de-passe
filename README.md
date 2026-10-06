@@ -30,14 +30,14 @@ uv sync
 uv run main.py [options]
 ```
 
-| Argument | Description | Défaut |
-|---|---|---|
-| `--length N` | Longueur du mot de passe | `16` |
-| `--no-lower` | Exclut les minuscules | incluses |
-| `--no-upper` | Exclut les majuscules | incluses |
-| `--no-digits` | Exclut les chiffres | inclus |
-| `--no-symbols` | Exclut les symboles | inclus |
-| `--validate` | Exige au moins un caractère de chaque type sélectionné | désactivé |
+| Argument       | Description                                            | Défaut     |
+|----------------|--------------------------------------------------------|------------|
+| `--length N`   | Longueur du mot de passe                               | `16`       |
+| `--no-lower`   | Exclut les minuscules                                  | incluses   |
+| `--no-upper`   | Exclut les majuscules                                  | incluses   |
+| `--no-digits`  | Exclut les chiffres                                    | inclus     |
+| `--no-symbols` | Exclut les symboles                                    | inclus     |
+| `--validate`   | Exige au moins un caractère de chaque type sélectionné | désactivé  |
 
 Le mot de passe généré est affiché sur la sortie standard.
 
@@ -82,18 +82,23 @@ TP1/
 
 ## Logique métier
 
-La classe `PasswordGenerator` (`app/core/generator.py`) est construite avec :
+La classe `PasswordGenerator` (`app/core/generator.py`) s'utilise ainsi :
 
 ```python
-PasswordGenerator(longueur, utilise_minuscule, utilise_majuscule,
-                  utilise_nombre, utilise_symbole, valide)
+from app.core.generator import PasswordGenerator
+
+# longueur, minuscules, majuscules, chiffres, symboles, validation
+gen = PasswordGenerator(16, True, True, True, True, False)
+print(gen.generer())
 ```
 
-| Méthode | Rôle |
-|---|---|
-| `generer()` | Retourne un mot de passe. Si la validation est activée, régénère jusqu'à ce que le mot de passe soit valide. |
-| `valider(mot_de_passe)` | Vérifie que le mot de passe contient au moins un caractère de chaque type sélectionné. |
-| `_generer_un_essai()` | Construit un mot de passe aléatoire à partir de l'ensemble des caractères autorisés. |
+Paramètres du constructeur : `longueur`, `utilise_minuscule`, `utilise_majuscule`, `utilise_nombre`, `utilise_symbole`, `valide`.
+
+| Méthode                 | Rôle                                                                                                          |
+|-------------------------|---------------------------------------------------------------------------------------------------------------|
+| `generer()`             | Retourne un mot de passe. Si la validation est activée, régénère jusqu'à ce que le mot de passe soit valide. |
+| `valider(mot_de_passe)` | Vérifie que le mot de passe contient au moins un caractère de chaque type sélectionné.                        |
+| `_generer_un_essai()`   | Construit un mot de passe aléatoire à partir de l'ensemble des caractères autorisés.                          |
 
 Les jeux de caractères proviennent du module `string` : `ascii_lowercase`, `ascii_uppercase`, `digits` et `punctuation`.
 
