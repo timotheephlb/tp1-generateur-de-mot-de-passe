@@ -11,4 +11,4 @@ wheels/
 .idea/
 
 # Données sensibles
-vault.json
+vault.json*
