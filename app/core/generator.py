@@ -59,19 +59,19 @@ class PasswordGenerator:
 
     def valider(self, mot_de_passe):
         """Retourne True si le mot de passe contient au moins un caractère de chaque type sélectionné."""
-        contient_minuscule=False
-        contient_majuscule=False
-        contient_nombre=False
-        contient_symbole=False
+        contient_minuscule = False
+        contient_majuscule = False
+        contient_nombre = False
+        contient_symbole = False
         for c in mot_de_passe:
             if c in self.TYPES_CARACTERES["minuscule"]:
-                contient_minuscule=True
+                contient_minuscule = True
             if c in self.TYPES_CARACTERES["majuscule"]:
-                contient_majuscule=True
+                contient_majuscule = True
             if c in self.TYPES_CARACTERES["nombre"]:
-                contient_nombre=True
+                contient_nombre = True
             if c in self.TYPES_CARACTERES["symbole"]:
-                contient_symbole=True
+                contient_symbole = True
 
         if self.utilise_majuscule and not contient_majuscule:
             return False
@@ -81,5 +81,6 @@ class PasswordGenerator:
             return False
         elif self.utilise_symbole and not contient_symbole:
             return False
-        else :
+        else:
             return True
+
