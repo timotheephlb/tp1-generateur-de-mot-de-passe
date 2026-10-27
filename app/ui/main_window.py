@@ -2,12 +2,12 @@
 # Prénom: Timothée
 # Numéro d'étudiant: 2507084
 # GitHub: timotheephlb
-import sys
 
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
-    QComboBox, QScrollArea, QListWidget, QListWidgetItem, QMessageBox
+    QComboBox, QScrollArea, QListWidget, QListWidgetItem, QMessageBox, QMenu
 )
 
 from app.core.storage import Entree, Storage
@@ -36,6 +36,8 @@ class FenetrePrincipale(QMainWindow):
 
         self.liste = QListWidget()
         self.liste.itemDoubleClicked.connect(self.basculer)
+        self.liste.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.liste.customContextMenuRequested.connect(self.afficher_menu)
 
         zone = QScrollArea()
         zone.setWidget(self.liste)
@@ -50,8 +52,10 @@ class FenetrePrincipale(QMainWindow):
         disposition = QHBoxLayout()
 
         self.bouton_ajouter = QPushButton("Ajouter")
+        self.bouton_ajouter.setObjectName("primaire")
         self.bouton_modifier = QPushButton("Modifier")
         self.bouton_supprimer = QPushButton("Supprimer")
+        self.bouton_supprimer.setObjectName("danger")
         self.liste_tri = QComboBox()
         self.liste_tri.addItems(["Trier : E-mail (A → Z)", "Trier : E-mail (Z → A)"])
 
@@ -71,7 +75,7 @@ class FenetrePrincipale(QMainWindow):
         """Lit vault.json. S'il est illisible, avertit l'utilisateur et affiche un coffre vide."""
         try:
             self.entrees = self.storage.charger()
-        except (ValueError, KeyError, TypeError):
+        except (ValueError, KeyError, TypeError, OSError):
             self.coffre_valide = False
             QMessageBox.critical(self, "Erreur lors du chargement", "Le fichier du coffre-fort est illisible.")
         self.afficher_liste()
@@ -95,6 +99,26 @@ class FenetrePrincipale(QMainWindow):
         entree = item.data(Qt.ItemDataRole.UserRole)
         est_masque = item.text() == self.texte(entree, False)
         item.setText(self.texte(entree, est_masque))
+
+    def afficher_menu(self, position) -> None:
+        """Clic droit sur une ligne : menu avec Révéler / Masquer, Modifier et Supprimer."""
+        item = self.liste.itemAt(position)
+        if item is None:
+            return
+        self.liste.setCurrentItem(item)
+
+        action_basculer = QAction("Révéler / Masquer", self)
+        action_modifier = QAction("Modifier", self)
+        action_supprimer = QAction("Supprimer", self)
+        action_basculer.triggered.connect(lambda: self.basculer(item))
+        action_modifier.triggered.connect(self.modifier)
+        action_supprimer.triggered.connect(self.supprimer)
+
+        menu = QMenu(self)
+        menu.addAction(action_basculer)
+        menu.addAction(action_modifier)
+        menu.addAction(action_supprimer)
+        menu.exec(self.liste.viewport().mapToGlobal(position))
 
     def ajouter(self) -> None:
         """Ouvre le formulaire d'ajout."""
@@ -134,9 +158,17 @@ class FenetrePrincipale(QMainWindow):
             self.entrees.remove(self.liste.item(ligne).data(Qt.ItemDataRole.UserRole))
             self.afficher_liste()
 
-
-if __name__ == "__main__":
-    application = QApplication(sys.argv)
-    fenetre = FenetrePrincipale()
-    fenetre.show()
-    sys.exit(application.exec())
+    def closeEvent(self, event) -> None:
+        """Enregistre le coffre-fort à la fermeture, sauf si le fichier chargé était illisible."""
+        if self.coffre_valide:
+            try:
+                self.storage.sauvegarder(self.entrees)
+            except OSError:
+                reponse = QMessageBox.question(
+                    self, "Erreur", "Impossible d'enregistrer le coffre-fort. Quitter quand même ?"
+                )
+                if reponse == QMessageBox.StandardButton.No:
+                    event.ignore()
+                    return
+        event.accept()
+        QApplication.quit()
