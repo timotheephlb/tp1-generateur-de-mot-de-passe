@@ -2,6 +2,7 @@
 # Prénom: Timothée
 # Numéro d'étudiant: 2507084
 # GitHub: timotheephlb
+
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (
     QWidget, QFormLayout, QHBoxLayout, QLineEdit, QPushButton, QMessageBox
@@ -37,6 +38,7 @@ class FormulaireEntree(QWidget):
 
         bouton_enregistrer = QPushButton("Enregistrer")
         bouton_annuler = QPushButton("Annuler")
+        bouton_enregistrer.setObjectName("primaire")
         bouton_enregistrer.clicked.connect(self.valider)
         bouton_annuler.clicked.connect(self.close)
         ligne_boutons = QHBoxLayout()
