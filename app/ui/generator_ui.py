@@ -2,7 +2,6 @@
 # Prénom: Timothée
 # Numéro d'étudiant: 2507084
 # GitHub: timotheephlb
-import sys
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
@@ -31,7 +30,7 @@ class FenetreGenerateur(QWidget):
 
         ligne_mot_de_passe = QHBoxLayout()
         self.etiquette = QLabel()
-        self.etiquette.setStyleSheet("font-size: 16px; font-weight: bold; font-family: monospace;")
+        self.etiquette.setObjectName("mot_de_passe")
         self.etiquette.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         self.bouton_masquer = QPushButton("Masquer")
         self.bouton_masquer.setCheckable(True)
@@ -60,6 +59,7 @@ class FenetreGenerateur(QWidget):
         bouton_regenerer = QPushButton("Régénérer")
         self.bouton_copier = QPushButton("Copier")
         self.bouton_utiliser = QPushButton("Utiliser")
+        self.bouton_utiliser.setObjectName("primaire")
         ligne_boutons.addWidget(bouton_regenerer)
         ligne_boutons.addWidget(self.bouton_copier)
         ligne_boutons.addStretch()
@@ -114,10 +114,3 @@ class FenetreGenerateur(QWidget):
         """Transmet le mot de passe à la fenêtre appelante, puis ferme la fenêtre."""
         self.mot_de_passe_choisi.emit(self.mot_de_passe)
         self.close()
-
-
-if __name__ == "__main__":
-    application = QApplication(sys.argv)
-    fenetre = FenetreGenerateur()
-    fenetre.show()
-    sys.exit(application.exec())
